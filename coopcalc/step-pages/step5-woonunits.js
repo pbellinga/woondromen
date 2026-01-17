@@ -17,9 +17,12 @@ const Step5Config = {
         {
             type: 'summary-box',
             rows: [
-                { label: 'Totale Huur Units', id: 'total-rent-units', valueKey: 'totalRentUnits', format: 'currency' },
+                { label: 'Totale Woonopbrengsten (Huur)', id: 'total-rent-income', valueKey: 'totalRentUnits', format: 'currency', isTotal: true },
+                { label: '', id: 'spacer-income', valueKey: '', format: 'spacer' },
                 { label: 'Totale Woonlasten per Maand', id: 'total-housing-costs', valueKey: 'totalMonthly', format: 'currency' },
-                { label: 'Totale Vierkante Meters', id: 'total-square-meters', valueKey: 'totalSquareMeters', format: 'number' },
+                { label: 'Verschil (Opbrengst - Lasten)', id: 'income-difference', valueKey: 'incomeDifference', format: 'currency', isTotal: true },
+                { label: '', id: 'spacer-details', valueKey: '', format: 'spacer' },
+                { label: 'Totale Vierkante Meters Units', id: 'total-square-meters', valueKey: 'totalSquareMeters', format: 'number' },
                 { label: 'Gedeelde Vierkante Meters', id: 'shared-square-meters', valueKey: 'sharedSquareMeters', format: 'number' }
             ]
         }

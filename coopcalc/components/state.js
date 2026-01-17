@@ -126,6 +126,7 @@ class CoopState {
         const totalRentUnits = (unitsDetails || []).reduce((sum, unit) => sum + (unit.rentPerMonth || 0), 0);
         const totalSquareMeters = (unitsDetails || []).reduce((sum, unit) => sum + (unit.squareMeters || 0), 0);
         const sharedSquareMeters = (sharedSpaces || []).reduce((sum, space) => sum + (space.squareMeters || 0), 0);
+        const incomeDifference = totalRentUnits - totalMonthly;
 
         return {
             price, tax, reno, totalCost, units, service,
@@ -146,7 +147,7 @@ class CoopState {
             totalServiceCosts, totalServiceCostsYearly, 
             totalMonthly, totalYearly, rentPerUnit,
             // Unit details
-            totalRentUnits, totalSquareMeters, sharedSquareMeters,
+            totalRentUnits, totalSquareMeters, sharedSquareMeters, incomeDifference,
             // Legacy compatibility
             equity: totalEigenInleg,
             loanAmount: bankAmount + woonleerAmount + obligatiesAmount,

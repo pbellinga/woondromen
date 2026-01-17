@@ -86,7 +86,9 @@ class CoopWizard {
         
         // Step 5 unit details
         this.updateElement('total-rent-units', CoopUtils.fmt(calculations.totalRentUnits));
+        this.updateElement('total-rent-income', CoopUtils.fmt(calculations.totalRentUnits));
         this.updateElement('total-housing-costs', CoopUtils.fmt(calculations.totalMonthly));
+        this.updateElement('income-difference', CoopUtils.fmt(calculations.incomeDifference));
         this.updateElement('total-square-meters', calculations.totalSquareMeters.toString());
         this.updateElement('shared-square-meters', calculations.sharedSquareMeters.toString());
         

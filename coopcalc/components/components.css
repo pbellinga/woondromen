@@ -373,3 +373,36 @@ h2 {
     align-items: center;
     justify-content: center;
 }
+
+/* Rent per m² display */
+.rent-per-sqm-display {
+    background: #e8f5e8;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px 0;
+    text-align: center;
+    border: 2px solid var(--highlight);
+}
+
+.rent-per-sqm-display strong {
+    color: var(--highlight);
+    font-size: 1.1rem;
+}
+
+/* Total rent summary */
+.total-rent-summary {
+    background: var(--bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    border-left: 4px solid var(--highlight);
+}
+
+.summary-row {
+    margin: 8px 0;
+    font-size: 1.05rem;
+}
+
+.summary-row strong {
+    color: var(--accent);
+}
