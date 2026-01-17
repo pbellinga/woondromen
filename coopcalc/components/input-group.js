@@ -53,22 +53,31 @@ class CoopInputGroup {
     setupEventListeners() {
         if (!this.input || !window.coopState) return;
 
-        // Update state on input change
+        // Add debouncing to prevent excessive state updates
+        let debounceTimer;
+        
+        // Update state on input change with debouncing
         this.input.addEventListener('input', () => {
-            let value = this.input.value;
-            
-            if (this.config.type === 'number') {
-                value = parseInt(value) || 0;
-            } else if (this.config.inputmode === 'numeric') {
-                value = CoopUtils.parseVal(value);
-            }
-            
-            window.coopState.setState(this.config.stateKey, value);
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                let value = this.input.value;
+                
+                if (this.config.inputType === 'number') {
+                    value = parseInt(value) || 0;
+                } else if (this.config.inputmode === 'numeric') {
+                    value = CoopUtils.parseVal(value);
+                }
+                
+                window.coopState.setState(this.config.stateKey, value);
+            }, 150);
         });
 
-        // Format input on blur for numeric inputs
+        // Format input on blur for numeric inputs and immediate update
         if (this.config.inputmode === 'numeric') {
             this.input.addEventListener('blur', () => {
+                clearTimeout(debounceTimer);
+                let value = CoopUtils.parseVal(this.input.value);
+                window.coopState.setState(this.config.stateKey, value);
                 CoopUtils.formatInput(this.input);
             });
         }
@@ -101,7 +110,7 @@ class CoopInputGroup {
     getValue() {
         if (!this.input) return null;
         
-        if (this.config.type === 'number') {
+        if (this.config.inputType === 'number') {
             return parseInt(this.input.value) || 0;
         } else if (this.config.inputmode === 'numeric') {
             return CoopUtils.parseVal(this.input.value);
