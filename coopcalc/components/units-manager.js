@@ -141,12 +141,32 @@ class CoopUnitsManager {
         sqmInput.min = 1;
         sqmInput.onchange = () => {
             unit.squareMeters = parseInt(sqmInput.value) || 0;
+            // Update the rent per m² display when square meters change
+            const newRentPerSqm = unit.squareMeters > 0 ? Math.round(unit.rentPerMonth / unit.squareMeters) : 0;
+            rentPerSqmInput.value = `€${newRentPerSqm}`;
             // Recalculate ALL unit rents to maintain consistent price per sqm
             this.recalculateAllRents();
         };
         sqmGroup.appendChild(sqmLabel);
         sqmGroup.appendChild(sqmInput);
         
+        // Rent per m² display
+        const rentPerSqmGroup = document.createElement('div');
+        rentPerSqmGroup.className = 'unit-input-group rent-per-sqm';
+        const rentPerSqmLabel = document.createElement('label');
+        rentPerSqmLabel.textContent = 'Huur per m²';
+        const rentPerSqmInput = document.createElement('input');
+        rentPerSqmInput.type = 'text';
+        rentPerSqmInput.className = 'rent-per-sqm-input';
+        rentPerSqmInput.readOnly = true;
+        rentPerSqmInput.style.backgroundColor = '#f1f5f9';
+        rentPerSqmInput.style.cursor = 'default';
+        // Calculate and display rent per m²
+        const rentPerSqmValue = unit.squareMeters > 0 ? Math.round(unit.rentPerMonth / unit.squareMeters) : 0;
+        rentPerSqmInput.value = `€${rentPerSqmValue}`;
+        rentPerSqmGroup.appendChild(rentPerSqmLabel);
+        rentPerSqmGroup.appendChild(rentPerSqmInput);
+
         // Rent input
         const rentGroup = document.createElement('div');
         rentGroup.className = 'unit-input-group';
@@ -159,6 +179,9 @@ class CoopUnitsManager {
         rentInput.min = 0;
         rentInput.onchange = () => {
             unit.rentPerMonth = parseFloat(rentInput.value) || 0;
+            // Update the rent per m² display when rent changes
+            const newRentPerSqm = unit.squareMeters > 0 ? Math.round(unit.rentPerMonth / unit.squareMeters) : 0;
+            rentPerSqmInput.value = `€${newRentPerSqm}`;
             this.updateState();
         };
         rentGroup.appendChild(rentLabel);
@@ -187,6 +210,7 @@ class CoopUnitsManager {
         
         wrapper.appendChild(unitNumber);
         wrapper.appendChild(sqmGroup);
+        wrapper.appendChild(rentPerSqmGroup);
         wrapper.appendChild(rentGroup);
         wrapper.appendChild(checkboxGroup);
         wrapper.appendChild(removeBtn);
@@ -290,12 +314,19 @@ class CoopUnitsManager {
             unit.rentPerMonth = newRent;
             totalRent += newRent;
             
-            // Update the input field display using specific class
+            // Update the input field displays using specific classes
             const unitElement = this.unitsContainer?.children[index];
             if (unitElement) {
                 const rentInput = unitElement.querySelector('.rent-input');
                 if (rentInput) {
                     rentInput.value = newRent;
+                }
+                
+                // Update the rent per m² display
+                const rentPerSqmInput = unitElement.querySelector('.rent-per-sqm-input');
+                if (rentPerSqmInput) {
+                    const rentPerSqmValue = unit.squareMeters > 0 ? Math.round(newRent / unit.squareMeters) : 0;
+                    rentPerSqmInput.value = `€${rentPerSqmValue}`;
                 }
             }
         });

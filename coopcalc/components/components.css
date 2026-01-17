@@ -331,6 +331,10 @@ h2 {
     min-width: 100px;
 }
 
+.unit-input-group.rent-per-sqm {
+    min-width: 85px;
+}
+
 .unit-input-group label, .shared-space-input-group label {
     font-size: 0.75rem;
     color: #64748b;
