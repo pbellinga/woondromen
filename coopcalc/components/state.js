@@ -5,7 +5,17 @@ class CoopState {
             price: 1600000,
             reno: 400000,
             units: 10,
-            equity: 100000,
+            // Financing options
+            bankPercentage: 70,
+            bankInterest: 4.5,
+            bankYears: 30,
+            woonleerPercentage: 15,
+            woonleerInterest: 2,
+            woonleerYears: 30,
+            obligatiesInterest: 2,
+            obligatiesYears: 15,
+            subsidies: 0,
+            eigenInlegPerPerson: 10000,
             service: 450
         };
         
@@ -49,36 +59,48 @@ class CoopState {
 
     // Perform all calculations based on current state
     calculate() {
-        const { price, reno, units, equity, service } = this.data;
+        const { price, reno, units, bankPercentage, bankInterest, bankYears, 
+                woonleerPercentage, woonleerInterest, woonleerYears,
+                obligatiesInterest, obligatiesYears, subsidies, eigenInlegPerPerson, service } = this.data;
         
-        // Calculations
+        // Basic calculations
         const tax = price * this.TAX_RATE;
         const totalCost = price + tax + reno;
-        const loanAmount = Math.max(0, totalCost - equity);
-
-        // Annuity: PMT = P * (r(1+r)^n) / ((1+r)^n - 1)
-        const r = this.INTEREST_RATE / 12;
-        const n = this.LOAN_YEARS * 12;
-        const monthlyMortgage = loanAmount > 0 
-            ? loanAmount * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1)
-            : 0;
         
-        const totalMonthly = monthlyMortgage + service;
+        // Financing amounts
+        const bankAmount = totalCost * (bankPercentage / 100);
+        const woonleerAmount = totalCost * (woonleerPercentage / 100);
+        const totalEigenInleg = eigenInlegPerPerson * units;
+        const financedAmount = bankAmount + woonleerAmount + subsidies + totalEigenInleg;
+        const obligatiesAmount = Math.max(0, totalCost - financedAmount);
+        
+        // Monthly payments calculations
+        const bankMonthly = this.calculateAnnuity(bankAmount, bankInterest, bankYears);
+        const woonleerMonthly = this.calculateAnnuity(woonleerAmount, woonleerInterest, woonleerYears);
+        const obligatiesMonthly = this.calculateAnnuity(obligatiesAmount, obligatiesInterest, obligatiesYears);
+        
+        const totalMonthlyFinancing = bankMonthly + woonleerMonthly + obligatiesMonthly;
+        const totalMonthly = totalMonthlyFinancing + service;
         const rentPerUnit = units > 0 ? totalMonthly / units : 0;
 
         return {
-            price,
-            tax,
-            reno,
-            totalCost,
-            loanAmount,
-            monthlyMortgage,
-            service,
-            totalMonthly,
-            rentPerUnit,
-            units,
-            equity
+            price, tax, reno, totalCost, units, service,
+            bankAmount, woonleerAmount, obligatiesAmount, subsidies, totalEigenInleg,
+            bankMonthly, woonleerMonthly, obligatiesMonthly,
+            totalMonthlyFinancing, totalMonthly, rentPerUnit,
+            // Legacy compatibility
+            equity: totalEigenInleg,
+            loanAmount: bankAmount + woonleerAmount + obligatiesAmount,
+            monthlyMortgage: totalMonthlyFinancing
         };
+    }
+
+    // Calculate annuity payment: PMT = P * (r(1+r)^n) / ((1+r)^n - 1)
+    calculateAnnuity(principal, annualRate, years) {
+        if (principal <= 0 || annualRate <= 0) return 0;
+        const r = annualRate / 100 / 12;
+        const n = years * 12;
+        return principal * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
     }
 
     // Initialize state and trigger initial calculation

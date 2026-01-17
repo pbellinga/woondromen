@@ -14,20 +14,57 @@ const Step2Config = {
             ]
         },
         {
+            type: 'financing-row',
+            label: 'Bank Hypotheek',
+            resultKey: 'bankAmount',
+            inputs: [
+                { label: '% van totaal', stateKey: 'bankPercentage', value: 70, min: 0, max: 100 },
+                { label: 'Rente %', stateKey: 'bankInterest', value: 4.5, step: 0.1 },
+                { label: 'Looptijd (jaar)', stateKey: 'bankYears', value: 30, min: 1 }
+            ]
+        },
+        {
+            type: 'financing-row',
+            label: 'Woonleenfonds',
+            resultKey: 'woonleerAmount',
+            inputs: [
+                { label: '% van totaal', stateKey: 'woonleerPercentage', value: 15, min: 0, max: 100 },
+                { label: 'Rente %', stateKey: 'woonleerInterest', value: 2, step: 0.1 },
+                { label: 'Looptijd (jaar)', stateKey: 'woonleerYears', value: 30, min: 1 }
+            ]
+        },
+        {
+            type: 'financing-row',
+            label: 'Obligaties',
+            resultKey: 'obligatiesAmount',
+            inputs: [
+                { label: 'Rente %', stateKey: 'obligatiesInterest', value: 2, step: 0.1 },
+                { label: 'Looptijd (jaar)', stateKey: 'obligatiesYears', value: 15, min: 1 }
+            ]
+        },
+        {
             type: 'input-group',
-            label: 'Eigen Inleg (Ledeninbreng €)',
-            id: 'equity',
+            label: 'Subsidies (€)',
+            id: 'subsidies',
             inputmode: 'numeric',
-            stateKey: 'equity',
-            value: '100.000'
+            stateKey: 'subsidies',
+            value: '0'
+        },
+        {
+            type: 'input-group',
+            label: 'Eigen Inleg per Persoon (€)',
+            id: 'eigenInlegPerPerson',
+            inputmode: 'numeric',
+            stateKey: 'eigenInlegPerPerson',
+            value: '10.000',
+            details: 'Totale eigen inleg wordt berekend: bedrag × aantal inwoners'
         },
         {
             type: 'summary-box',
             rows: [
-                { label: 'Benodigde Lening', id: 'wiz-loan', valueKey: 'loanAmount', format: 'currency' },
-                { label: 'Indicatie Maandlast Bank', id: 'wiz-mortgage', valueKey: 'monthlyMortgage', format: 'currency', isTotal: true }
-            ],
-            details: 'Hypotheek: 4.5%, 30 jaar annuïteit.'
+                { label: 'Totale Eigen Inleg', id: 'wiz-total-eigen', valueKey: 'totalEigenInleg', format: 'currency' },
+                { label: 'Maandlast Financiering', id: 'wiz-financing', valueKey: 'totalMonthlyFinancing', format: 'currency', isTotal: true }
+            ]
         }
     ],
     buttons: [

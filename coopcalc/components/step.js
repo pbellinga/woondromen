@@ -43,6 +43,12 @@ class CoopStep {
                     case 'result-display':
                         component = new CoopResultDisplay(contentConfig);
                         break;
+                    case 'financing-row':
+                        component = new CoopFinancingRow(contentConfig);
+                        break;
+                    case 'financing-row':
+                        component = new CoopFinancingRow(contentConfig);
+                        break;
                     default:
                         console.warn(`Unknown component type: ${contentConfig.type}`);
                         return;
