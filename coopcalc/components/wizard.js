@@ -45,8 +45,24 @@ class CoopWizard {
         this.updateElement('wiz-tax', CoopUtils.fmt(calculations.tax));
         this.updateElement('wiz-reno', CoopUtils.fmt(calculations.reno));
         this.updateElement('wiz-total-cost', CoopUtils.fmt(calculations.totalCost));
+        
+        // Update financing breakdown
+        this.updateElement('fin-bank', CoopUtils.fmt(calculations.bankAmount));
+        this.updateElement('fin-woonleer', CoopUtils.fmt(calculations.woonleerAmount));
+        this.updateElement('fin-obligaties', CoopUtils.fmt(calculations.obligatiesAmount));
+        this.updateElement('fin-subsidies', CoopUtils.fmt(calculations.subsidies));
+        this.updateElement('fin-eigen', CoopUtils.fmt(calculations.totalEigenInleg));
+        this.updateElement('fin-total', CoopUtils.fmt(calculations.totalFinancing));
+        
+        // Update financing balance check
+        this.updateElement('check-financing', CoopUtils.fmt(calculations.totalFinancing));
+        this.updateElement('check-costs', CoopUtils.fmt(calculations.totalCost));
+        this.updateElement('check-balance', CoopUtils.fmt(calculations.financingBalance));
+        
+        // Legacy elements
         this.updateElement('wiz-loan', CoopUtils.fmt(calculations.loanAmount));
         this.updateElement('wiz-mortgage', CoopUtils.fmt(calculations.monthlyMortgage));
+        this.updateElement('wiz-financing', CoopUtils.fmt(calculations.totalMonthlyFinancing));
 
         // Update step 4 (results)
         this.updateElement('res-mortgage', CoopUtils.fmt(calculations.monthlyMortgage));

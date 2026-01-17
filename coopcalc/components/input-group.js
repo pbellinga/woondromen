@@ -99,11 +99,17 @@ class CoopInputGroup {
 
         // Subscribe to state changes to update input value
         window.coopState.subscribe((data, calculations) => {
-            if (data[this.config.stateKey] !== undefined) {
+            // Update input from calculated values if available
+            let updateValue = data[this.config.stateKey];
+            if (calculations[this.config.stateKey] !== undefined) {
+                updateValue = calculations[this.config.stateKey];
+            }
+            
+            if (updateValue !== undefined) {
                 if (this.config.inputmode === 'numeric') {
-                    this.input.value = data[this.config.stateKey].toLocaleString('nl-NL');
+                    this.input.value = updateValue.toLocaleString('nl-NL');
                 } else {
-                    this.input.value = data[this.config.stateKey];
+                    this.input.value = updateValue;
                 }
             }
             

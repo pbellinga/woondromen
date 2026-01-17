@@ -62,6 +62,15 @@ const Step2Config = {
             details: 'Totale eigen inleg wordt berekend: bedrag × aantal inwoners',
             showResult: true,
             resultKey: 'totalEigenInleg'
+        },
+        {
+            type: 'summary-box',
+            rows: [
+                { label: 'Totale Financiering', id: 'check-financing', valueKey: 'totalFinancing', format: 'currency' },
+                { label: 'Totale Kosten', id: 'check-costs', valueKey: 'totalCost', format: 'currency' },
+                { label: 'Financiering Balans', id: 'check-balance', valueKey: 'financingBalance', format: 'currency', isTotal: true }
+            ],
+            details: 'Balans moet 0 zijn voor volledige dekking'
         }
     ],
     buttons: [

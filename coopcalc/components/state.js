@@ -71,8 +71,14 @@ class CoopState {
         const bankAmount = totalCost * (bankPercentage / 100);
         const woonleerAmount = totalCost * (woonleerPercentage / 100);
         const totalEigenInleg = eigenInlegPerPerson * units;
-        const financedAmount = bankAmount + woonleerAmount + subsidies + totalEigenInleg;
-        const obligatiesAmount = Math.max(0, totalCost - financedAmount);
+        
+        // Calculate what's already covered (use actual input values, not adjusted)
+        const coveredAmount = bankAmount + woonleerAmount + subsidies + totalEigenInleg;
+        const obligatiesAmount = Math.max(0, totalCost - coveredAmount);
+        
+        // Total financing check (use actual input values for balance calculation)
+        const totalFinancing = bankAmount + woonleerAmount + obligatiesAmount + subsidies + totalEigenInleg;
+        const financingBalance = totalFinancing - totalCost;
         
         // Monthly payments calculations
         const bankMonthly = this.calculateAnnuity(bankAmount, bankInterest, bankYears);
@@ -85,7 +91,10 @@ class CoopState {
 
         return {
             price, tax, reno, totalCost, units, service,
-            bankAmount, woonleerAmount, obligatiesAmount, subsidies, totalEigenInleg,
+            bankAmount, woonleerAmount, obligatiesAmount, subsidies, 
+            totalEigenInleg,
+            eigenInlegPerPerson,
+            totalFinancing, financingBalance,
             bankMonthly, woonleerMonthly, obligatiesMonthly,
             totalMonthlyFinancing, totalMonthly, rentPerUnit,
             // Legacy compatibility
