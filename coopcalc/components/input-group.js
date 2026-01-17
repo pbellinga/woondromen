@@ -14,7 +14,7 @@ class CoopInputGroup {
         label.textContent = this.config.label;
         
         const input = document.createElement('input');
-        input.type = this.config.type || 'text';
+        input.type = this.config.inputType || this.config.type || 'text';
         input.id = this.config.id;
         
         if (this.config.inputmode) {

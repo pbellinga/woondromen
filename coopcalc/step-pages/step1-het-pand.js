@@ -24,7 +24,7 @@ const Step1Config = {
             type: 'input-group',
             label: 'Aantal Woonunits/Huishoudens',
             id: 'units',
-            type: 'number',
+            inputType: 'number',
             min: 1,
             stateKey: 'units',
             value: 10
