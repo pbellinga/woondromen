@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wooncoöperatie Calculator</title>
+    <link rel="stylesheet" href="components/components.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card" id="wizard-container">
+            <!-- Steps will be dynamically generated here -->
+        </div>
+    </div>
+
+    <!-- Load component scripts -->
+    <script src="components/state.js"></script>
+    <script src="components/input-group.js"></script>
+    <script src="components/summary-box.js"></script>
+    <script src="components/result-display.js"></script>
+    <script src="components/step.js"></script>
+    <script src="components/wizard.js"></script>
+
+    <script>
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create wizard instance
+            const wizard = new CoopWizard('wizard-container');
+            
+            // Configure steps
+            const steps = [
+                {
+                    stepId: 1,
+                    title: '1. Het Pand',
+                    description: 'Wat zijn de eigenschappen van het beoogde pand?',
+                    content: [
+                        {
+                            type: 'input-group',
+                            label: 'Inkoopwaarde Pand (€)',
+                            id: 'price',
+                            inputmode: 'numeric',
+                            stateKey: 'price',
+                            value: '1.600.000'
+                        },
+                        {
+                            type: 'input-group',
+                            label: 'Inschatting Verbouwing (€)',
+                            id: 'reno',
+                            inputmode: 'numeric',
+                            stateKey: 'reno',
+                            value: '400.000'
+                        },
+                        {
+                            type: 'input-group',
+                            label: 'Aantal Woonunits/Huishoudens',
+                            id: 'units',
+                            type: 'number',
+                            min: 1,
+                            stateKey: 'units',
+                            value: 10
+                        }
+                    ],
+                    buttons: [
+                        {
+                            label: 'Volgende',
+                            action: 'next',
+                            stepId: 2
+                        }
+                    ]
+                },
+                {
+                    stepId: 2,
+                    title: '2. Financiering',
+                    description: 'Hoe wordt het project gefinancierd?',
+                    content: [
+                        {
+                            type: 'summary-box',
+                            rows: [
+                                { label: 'Aanschaf', id: 'wiz-price', valueKey: 'price', format: 'currency' },
+                                { label: 'Belasting (10%)', id: 'wiz-tax', valueKey: 'tax', format: 'currency' },
+                                { label: 'Verbouwing', id: 'wiz-reno', valueKey: 'reno', format: 'currency' },
+                                { label: 'Totale Kosten', id: 'wiz-total-cost', valueKey: 'totalCost', format: 'currency', isTotal: true }
+                            ]
+                        },
+                        {
+                            type: 'input-group',
+                            label: 'Eigen Inleg (Ledeninbreng €)',
+                            id: 'equity',
+                            inputmode: 'numeric',
+                            stateKey: 'equity',
+                            value: '100.000'
+                        },
+                        {
+                            type: 'summary-box',
+                            rows: [
+                                { label: 'Benodigde Lening', id: 'wiz-loan', valueKey: 'loanAmount', format: 'currency' },
+                                { label: 'Indicatie Maandlast Bank', id: 'wiz-mortgage', valueKey: 'monthlyMortgage', format: 'currency', isTotal: true }
+                            ],
+                            details: 'Hypotheek: 4.5%, 30 jaar annuïteit.'
+                        }
+                    ],
+                    buttons: [
+                        {
+                            label: 'Vorige',
+                            action: 'next',
+                            stepId: 1,
+                            secondary: true
+                        },
+                        {
+                            label: 'Volgende',
+                            action: 'next',
+                            stepId: 3
+                        }
+                    ]
+                },
+                {
+                    stepId: 3,
+                    title: '3. Vaste Lasten',
+                    description: 'Wat zijn de lopende kosten voor de vereniging?',
+                    content: [
+                        {
+                            type: 'input-group',
+                            label: 'Service, Onderhoud & Beheer (Totaal per maand €)',
+                            id: 'service',
+                            inputmode: 'numeric',
+                            stateKey: 'service',
+                            value: '450',
+                            details: 'Denk aan: VvE-bijdrage (indien appartement), opstalverzekering, gemeentelijke belastingen, reservering onderhoud.'
+                        }
+                    ],
+                    buttons: [
+                        {
+                            label: 'Vorige',
+                            action: 'next',
+                            stepId: 2,
+                            secondary: true
+                        },
+                        {
+                            label: 'Bereken Huur',
+                            action: 'next',
+                            stepId: 4
+                        }
+                    ]
+                },
+                {
+                    stepId: 4,
+                    title: 'Resultaat',
+                    content: [
+                        {
+                            type: 'summary-box',
+                            rows: [
+                                { label: 'Hypotheeklasten', id: 'res-mortgage', valueKey: 'monthlyMortgage', format: 'currency' },
+                                { label: 'Service & Onderhoud', id: 'res-service', valueKey: 'service', format: 'currency' },
+                                { label: 'Totaal Benodigd Inkomen', id: 'res-total', valueKey: 'totalMonthly', format: 'currency', isTotal: true }
+                            ]
+                        },
+                        {
+                            type: 'result-display',
+                            label: 'Vereiste Huur per Unit',
+                            id: 'res-rent',
+                            valueKey: 'rentPerUnit',
+                            details: 'Exclusief individuele kosten zoals energie en water.'
+                        }
+                    ],
+                    buttons: [
+                        {
+                            label: 'Terug',
+                            action: 'next',
+                            stepId: 3,
+                            secondary: true
+                        }
+                    ]
+                }
+            ];
+
+            // Create and add steps to the wizard container
+            steps.forEach(stepConfig => {
+                const step = new CoopStep(stepConfig);
+                wizard.container.appendChild(step.getElement());
+            });
+
+            // Initialize the wizard and state
+            wizard.init();
+            window.coopState.init();
+        });
+    </script>
+</body>
+</html>

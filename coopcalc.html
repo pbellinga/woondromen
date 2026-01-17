@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wooncoöperatie Calculator</title>
+    <style>
+        :root {
+            --bg: #f4f4f9;
+            --card: #ffffff;
+            --text: #333333;
+            --accent: #2c3e50;
+            --highlight: #27ae60;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { margin: 0 0 10px 0; font-size: 1.5rem; color: var(--accent); }
+        h2 { margin: 0 0 15px 0; font-size: 1.2rem; color: var(--accent); border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
+        
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 500; margin-bottom: 5px; font-size: 0.9rem; }
+        input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        .result-row.total {
+            font-weight: bold;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        .main-output {
+            background: var(--accent);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .main-output .amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--highlight);
+        }
+        .main-output .label { opacity: 0.8; font-size: 0.9rem; }
+        
+        .details { font-size: 0.85rem; color: #666; margin-top: 10px; }
+        
+        /* Wizard specific */
+        .step { display: none; }
+        .step.active { display: block; animation: fadein 0.3s; }
+        @keyframes fadein { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; background: var(--accent); color: white; font-weight: bold; }
+        .btn.secondary { background: #e0e0e0; color: #333; }
+        .summary-box { background: var(--bg); padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Step 1: Object -->
+            <div id="step-1" class="step active">
+                <h1>1. Het Pand</h1>
+                <p>Wat zijn de eigenschappen van het beoogde pand?</p>
+
+                <div class="input-group">
+                    <label>Inkoopwaarde Pand (€)</label>
+                    <input type="text" inputmode="numeric" id="price" value="1.600.000">
+                </div>
+                <div class="input-group">
+                    <label>Inschatting Verbouwing (€)</label>
+                    <input type="text" inputmode="numeric" id="reno" value="400.000">
+                </div>
+                <div class="input-group">
+                    <label>Aantal Woonunits/Huishoudens</label>
+                    <input type="number" id="units" value="10" min="1">
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn" onclick="next(2)">Volgende</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Financiering -->
+            <div id="step-2" class="step">
+                <h1>2. Financiering</h1>
+                <p>Hoe wordt het project gefinancierd?</p>
+
+                <div class="summary-box">
+                    <div class="result-row"><span>Aanschaf</span> <span id="wiz-price">-</span></div>
+                    <div class="result-row"><span>Belasting (10%)</span> <span id="wiz-tax">-</span></div>
+                    <div class="result-row"><span>Verbouwing</span> <span id="wiz-reno">-</span></div>
+                    <div class="result-row total"><span>Totale Kosten</span> <span id="wiz-total-cost">-</span></div>
+                </div>
+
+                <div class="input-group">
+                    <label>Eigen Inleg (Ledeninbreng €)</label>
+                    <input type="text" inputmode="numeric" id="equity" value="100.000">
+                </div>
+
+                <div class="summary-box">
+                    <div class="result-row"><span>Benodigde Lening</span> <span id="wiz-loan">-</span></div>
+                    <div class="details">Hypotheek: 4.5%, 30 jaar annuïteit.</div>
+                    <div class="result-row total"><span>Indicatie Maandlast Bank</span> <span id="wiz-mortgage">-</span></div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn secondary" onclick="next(1)">Vorige</button>
+                    <button class="btn" onclick="next(3)">Volgende</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Vaste Lasten -->
+            <div id="step-3" class="step">
+                <h1>3. Vaste Lasten</h1>
+                <p>Wat zijn de lopende kosten voor de vereniging?</p>
+
+                <div class="input-group">
+                    <label>Service, Onderhoud & Beheer (Totaal per maand €)</label>
+                    <input type="text" inputmode="numeric" id="service" value="450">
+                    <div class="details">Denk aan: VvE-bijdrage (indien appartement), opstalverzekering, gemeentelijke belastingen, reservering onderhoud.</div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn secondary" onclick="next(2)">Vorige</button>
+                    <button class="btn" onclick="next(4)">Bereken Huur</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Resultaat -->
+            <div id="step-4" class="step">
+                <h1>Resultaat</h1>
+                
+                <div class="summary-box">
+                    <div class="result-row"><span>Hypotheeklasten</span> <span id="res-mortgage">€0</span></div>
+                    <div class="result-row"><span>Service & Onderhoud</span> <span id="res-service">€0</span></div>
+                    <div class="result-row total"><span>Totaal Benodigd Inkomen</span> <span id="res-total">€0</span></div>
+                </div>
+
+                <div class="main-output">
+                    <div class="label">Vereiste Huur per Unit</div>
+                    <div class="amount" id="res-rent">€0</div>
+                </div>
+                
+                <div class="details" style="text-align: center;">Exclusief individuele kosten zoals energie en water.</div>
+
+                <div class="btn-row">
+                    <button class="btn secondary" onclick="next(3)">Terug</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Constants from specification
+        const TAX_RATE = 0.10; // 10% Transfer Tax
+        const INTEREST_RATE = 0.045; // 4.5% Bank Interest
+        const LOAN_YEARS = 30;
+
+        // --- Utils ---
+        function fmt(num) {
+            return num.toLocaleString('nl-NL', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+        }
+
+        function parseVal(str) {
+            if (typeof str !== 'string') return str;
+            return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+
+        function formatInput(el) {
+            const val = parseVal(el.value);
+            if (!isNaN(val) && el.value.trim() !== '') {
+               el.value = val.toLocaleString('nl-NL');
+            }
+        }
+
+        // --- Navigation ---
+        let currentStep = 1;
+        function next(stepId) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${stepId}`).classList.add('active');
+            currentStep = stepId;
+            calc(); // Ensure UI is fresh
+        }
+
+        // --- Data & Logic ---
+        function calc() {
+            // Inputs
+            const price = parseVal(document.getElementById('price').value);
+            const reno  = parseVal(document.getElementById('reno').value);
+            const units = parseInt(document.getElementById('units').value) || 1;
+            const equity = parseVal(document.getElementById('equity').value);
+            const service = parseVal(document.getElementById('service').value);
+
+            // Calculations
+            const tax = price * TAX_RATE;
+            const totalCost = price + tax + reno;
+            const loanAmount = Math.max(0, totalCost - equity);
+
+            // Annuity: PMT = P * (r(1+r)^n) / ((1+r)^n - 1)
+            const r = INTEREST_RATE / 12;
+            const n = LOAN_YEARS * 12;
+            const monthlyMortgage = loanAmount > 0 
+                ? loanAmount * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1)
+                : 0;
+            
+            const totalMonthly = monthlyMortgage + service;
+            const rentPerUnit = units > 0 ? totalMonthly / units : 0;
+
+            // Update UI (Step 2: Financing)
+            if (document.getElementById('wiz-price')) {
+                document.getElementById('wiz-price').textContent = fmt(price);
+                document.getElementById('wiz-tax').textContent = fmt(tax);
+                document.getElementById('wiz-reno').textContent = fmt(reno);
+                document.getElementById('wiz-total-cost').textContent = fmt(totalCost);
+                document.getElementById('wiz-loan').textContent = fmt(loanAmount);
+                document.getElementById('wiz-mortgage').textContent = fmt(monthlyMortgage);
+            }
+
+            // Update UI (Step 4: Result)
+            if (document.getElementById('res-mortgage')) {
+                document.getElementById('res-mortgage').textContent = fmt(monthlyMortgage);
+                document.getElementById('res-service').textContent = fmt(service);
+                document.getElementById('res-total').textContent = fmt(totalMonthly);
+                document.getElementById('res-rent').textContent = fmt(rentPerUnit);
+            }
+        }
+
+        // Bindings
+        const inputIds = ['price', 'reno', 'units', 'equity', 'service'];
+        inputIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', calc);
+                if (el.type === 'text') {
+                    el.addEventListener('blur', () => formatInput(el));
+                }
+            }
+        });
+
+        // Init
+        calc();
+    </script>
+</body>
+</html>
