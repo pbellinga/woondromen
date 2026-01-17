@@ -63,6 +63,25 @@ class CoopWizard {
         this.updateElement('wiz-loan', CoopUtils.fmt(calculations.loanAmount));
         this.updateElement('wiz-mortgage', CoopUtils.fmt(calculations.monthlyMortgage));
         this.updateElement('wiz-financing', CoopUtils.fmt(calculations.totalMonthlyFinancing));
+        
+        // Step 3 detailed financing breakdown
+        this.updateElement('bank-principal', CoopUtils.fmt(calculations.bankPrincipal));
+        this.updateElement('bank-interest-monthly', CoopUtils.fmt(calculations.bankInterestMonthly));
+        this.updateElement('bank-total', CoopUtils.fmt(calculations.bankMonthly));
+        
+        this.updateElement('woonleer-principal', CoopUtils.fmt(calculations.woonleerPrincipal));
+        this.updateElement('woonleer-interest-monthly', CoopUtils.fmt(calculations.woonleerInterestMonthly));
+        this.updateElement('woonleer-total', CoopUtils.fmt(calculations.woonleerMonthly));
+        
+        this.updateElement('obligaties-principal', CoopUtils.fmt(calculations.obligatiesPrincipal));
+        this.updateElement('obligaties-interest-monthly', CoopUtils.fmt(calculations.obligatiesInterestMonthly));
+        this.updateElement('obligaties-total', CoopUtils.fmt(calculations.obligatiesMonthly));
+        
+        // Step 3 cost totals
+        this.updateElement('total-financing', CoopUtils.fmt(calculations.totalMonthlyFinancing));
+        this.updateElement('total-coop-fund', CoopUtils.fmt(calculations.coopFund));
+        this.updateElement('total-service', CoopUtils.fmt(calculations.totalServiceCosts));
+        this.updateElement('grand-total', CoopUtils.fmt(calculations.totalMonthly));
 
         // Update step 4 (results)
         this.updateElement('res-mortgage', CoopUtils.fmt(calculations.monthlyMortgage));

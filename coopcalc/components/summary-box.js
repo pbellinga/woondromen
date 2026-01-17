@@ -41,6 +41,14 @@ class CoopSummaryBox {
     // Create a single result row
     createResultRow(rowConfig) {
         const row = document.createElement('div');
+        
+        // Handle spacer rows
+        if (rowConfig.format === 'spacer') {
+            row.className = 'result-row spacer';
+            row.innerHTML = '&nbsp;';
+            return row;
+        }
+        
         row.className = rowConfig.isTotal ? 'result-row total' : 'result-row';
         
         const label = document.createElement('span');

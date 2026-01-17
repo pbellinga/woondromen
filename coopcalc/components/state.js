@@ -16,7 +16,13 @@ class CoopState {
             obligatiesYears: 15,
             subsidies: 0,
             eigenInlegPerPerson: 10000,
-            service: 450
+            // Monthly costs
+            coopFund: 50,
+            reserveringOnderhoud: 90,
+            servicekostenGWL: 90,
+            belastingen: 40,
+            verzekeringen: 30,
+            service: 450 // Legacy compatibility
         };
         
         this.listeners = [];
@@ -61,7 +67,8 @@ class CoopState {
     calculate() {
         const { price, reno, units, bankPercentage, bankInterest, bankYears, 
                 woonleerPercentage, woonleerInterest, woonleerYears,
-                obligatiesInterest, obligatiesYears, subsidies, eigenInlegPerPerson, service } = this.data;
+                obligatiesInterest, obligatiesYears, subsidies, eigenInlegPerPerson,
+                coopFund, reserveringOnderhoud, servicekostenGWL, belastingen, verzekeringen } = this.data;
         
         // Basic calculations
         const tax = price * this.TAX_RATE;
@@ -80,23 +87,41 @@ class CoopState {
         const totalFinancing = bankAmount + woonleerAmount + obligatiesAmount + subsidies + totalEigenInleg;
         const financingBalance = totalFinancing - totalCost;
         
-        // Monthly payments calculations
+        // Detailed monthly payments calculations with principal/interest breakdown
         const bankMonthly = this.calculateAnnuity(bankAmount, bankInterest, bankYears);
+        const bankInterestMonthly = bankAmount * (bankInterest / 100 / 12);
+        const bankPrincipal = bankMonthly - bankInterestMonthly;
+        
         const woonleerMonthly = this.calculateAnnuity(woonleerAmount, woonleerInterest, woonleerYears);
+        const woonleerInterestMonthly = woonleerAmount * (woonleerInterest / 100 / 12);
+        const woonleerPrincipal = woonleerMonthly - woonleerInterestMonthly;
+        
         const obligatiesMonthly = this.calculateAnnuity(obligatiesAmount, obligatiesInterest, obligatiesYears);
+        const obligatiesInterestMonthly = obligatiesAmount * (obligatiesInterest / 100 / 12);
+        const obligatiesPrincipal = obligatiesMonthly - obligatiesInterestMonthly;
         
         const totalMonthlyFinancing = bankMonthly + woonleerMonthly + obligatiesMonthly;
-        const totalMonthly = totalMonthlyFinancing + service;
+        
+        // Service costs breakdown
+        const totalServiceCosts = reserveringOnderhoud + servicekostenGWL + belastingen + verzekeringen;
+        const service = totalServiceCosts; // Legacy compatibility
+        
+        const totalMonthly = totalMonthlyFinancing + coopFund + totalServiceCosts;
         const rentPerUnit = units > 0 ? totalMonthly / units : 0;
 
         return {
             price, tax, reno, totalCost, units, service,
             bankAmount, woonleerAmount, obligatiesAmount, subsidies, 
-            totalEigenInleg,
-            eigenInlegPerPerson,
+            totalEigenInleg, eigenInlegPerPerson,
             totalFinancing, financingBalance,
-            bankMonthly, woonleerMonthly, obligatiesMonthly,
-            totalMonthlyFinancing, totalMonthly, rentPerUnit,
+            // Detailed monthly financing breakdown
+            bankMonthly, bankPrincipal, bankInterestMonthly,
+            woonleerMonthly, woonleerPrincipal, woonleerInterestMonthly,
+            obligatiesMonthly, obligatiesPrincipal, obligatiesInterestMonthly,
+            totalMonthlyFinancing,
+            // Cost categories
+            coopFund, reserveringOnderhoud, servicekostenGWL, belastingen, verzekeringen,
+            totalServiceCosts, totalMonthly, rentPerUnit,
             // Legacy compatibility
             equity: totalEigenInleg,
             loanAmount: bankAmount + woonleerAmount + obligatiesAmount,
