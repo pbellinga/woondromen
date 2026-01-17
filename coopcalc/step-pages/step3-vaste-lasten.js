@@ -5,6 +5,12 @@ const Step3Config = {
     description: 'Wat zijn de lopende kosten voor de vereniging?',
     content: [
         {
+            type: 'summary-box',
+            rows: [
+                { label: 'Maandlast Financiering', id: 'wiz-financing', valueKey: 'totalMonthlyFinancing', format: 'currency', isTotal: true }
+            ]
+        },
+        {
             type: 'input-group',
             label: 'Service, Onderhoud & Beheer (Totaal per maand €)',
             id: 'service',

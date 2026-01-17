@@ -8,7 +8,7 @@ class CoopInputGroup {
     // Create the HTML structure
     render() {
         const wrapper = document.createElement('div');
-        wrapper.className = 'input-group';
+        wrapper.className = this.config.showResult ? 'input-group input-group-with-result' : 'input-group';
         
         const label = document.createElement('label');
         label.textContent = this.config.label;
@@ -30,7 +30,22 @@ class CoopInputGroup {
         }
 
         wrapper.appendChild(label);
-        wrapper.appendChild(input);
+        
+        if (this.config.showResult) {
+            const inputContainer = document.createElement('div');
+            inputContainer.className = 'input-with-result';
+            inputContainer.appendChild(input);
+            
+            const result = document.createElement('div');
+            result.className = 'input-result';
+            result.id = `result-${this.config.resultKey}`;
+            result.textContent = '€ 0';
+            inputContainer.appendChild(result);
+            
+            wrapper.appendChild(inputContainer);
+        } else {
+            wrapper.appendChild(input);
+        }
 
         // Add details if provided
         if (this.config.details) {
@@ -83,12 +98,20 @@ class CoopInputGroup {
         }
 
         // Subscribe to state changes to update input value
-        window.coopState.subscribe((data) => {
+        window.coopState.subscribe((data, calculations) => {
             if (data[this.config.stateKey] !== undefined) {
                 if (this.config.inputmode === 'numeric') {
                     this.input.value = data[this.config.stateKey].toLocaleString('nl-NL');
                 } else {
                     this.input.value = data[this.config.stateKey];
+                }
+            }
+            
+            // Update result display if applicable
+            if (this.config.showResult && this.config.resultKey && calculations[this.config.resultKey] !== undefined) {
+                const resultElement = this.element.querySelector(`#result-${this.config.resultKey}`);
+                if (resultElement) {
+                    resultElement.textContent = CoopUtils.fmt(calculations[this.config.resultKey]);
                 }
             }
         });

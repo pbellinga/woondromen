@@ -48,23 +48,20 @@ const Step2Config = {
             id: 'subsidies',
             inputmode: 'numeric',
             stateKey: 'subsidies',
-            value: '0'
+            value: '0',
+            showResult: true,
+            resultKey: 'subsidies'
         },
         {
             type: 'input-group',
             label: 'Eigen Inleg per Persoon (€)',
-            id: 'eigenInlegPerPerson',
+            id: 'eigenInlegPerPersoon',
             inputmode: 'numeric',
             stateKey: 'eigenInlegPerPerson',
             value: '10.000',
-            details: 'Totale eigen inleg wordt berekend: bedrag × aantal inwoners'
-        },
-        {
-            type: 'summary-box',
-            rows: [
-                { label: 'Totale Eigen Inleg', id: 'wiz-total-eigen', valueKey: 'totalEigenInleg', format: 'currency' },
-                { label: 'Maandlast Financiering', id: 'wiz-financing', valueKey: 'totalMonthlyFinancing', format: 'currency', isTotal: true }
-            ]
+            details: 'Totale eigen inleg wordt berekend: bedrag × aantal inwoners',
+            showResult: true,
+            resultKey: 'totalEigenInleg'
         }
     ],
     buttons: [
