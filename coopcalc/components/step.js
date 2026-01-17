@@ -46,8 +46,12 @@ class CoopStep {
                     case 'financing-row':
                         component = new CoopFinancingRow(contentConfig);
                         break;
-                    case 'financing-row':
-                        component = new CoopFinancingRow(contentConfig);
+                    case 'units-manager':
+                        component = new CoopUnitsManager(contentConfig);
+                        break;
+                    case 'shared-spaces-manager':
+                        component = new CoopSharedSpacesManager(contentConfig);
+                        break;
                         break;
                     default:
                         console.warn(`Unknown component type: ${contentConfig.type}`);

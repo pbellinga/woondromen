@@ -77,7 +77,20 @@ class CoopWizard {
         this.updateElement('obligaties-interest-monthly', CoopUtils.fmt(calculations.obligatiesInterestMonthly));
         this.updateElement('obligaties-total', CoopUtils.fmt(calculations.obligatiesMonthly));
         
-        // Step 3 cost totals
+        // Step 3 cost totals (yearly and monthly)
+        this.updateElement('total-financing-yearly', CoopUtils.fmt(calculations.totalYearlyFinancing));
+        this.updateElement('total-coop-fund-yearly', CoopUtils.fmt(calculations.coopFundYearly));
+        this.updateElement('total-service-yearly', CoopUtils.fmt(calculations.totalServiceCostsYearly));
+        this.updateElement('grand-total-yearly', CoopUtils.fmt(calculations.totalYearly));
+        this.updateElement('grand-total-monthly', CoopUtils.fmt(calculations.totalMonthly));
+        
+        // Step 5 unit details
+        this.updateElement('total-rent-units', CoopUtils.fmt(calculations.totalRentUnits));
+        this.updateElement('total-housing-costs', CoopUtils.fmt(calculations.totalMonthly));
+        this.updateElement('total-square-meters', calculations.totalSquareMeters.toString());
+        this.updateElement('shared-square-meters', calculations.sharedSquareMeters.toString());
+        
+        // Legacy monthly elements (for backwards compatibility)
         this.updateElement('total-financing', CoopUtils.fmt(calculations.totalMonthlyFinancing));
         this.updateElement('total-coop-fund', CoopUtils.fmt(calculations.coopFund));
         this.updateElement('total-service', CoopUtils.fmt(calculations.totalServiceCosts));

@@ -17,12 +17,15 @@ class CoopState {
             subsidies: 0,
             eigenInlegPerPerson: 10000,
             // Monthly costs
-            coopFund: 50,
-            reserveringOnderhoud: 90,
-            servicekostenGWL: 90,
-            belastingen: 40,
-            verzekeringen: 30,
-            service: 450 // Legacy compatibility
+            coopFund: 5000,
+            reserveringOnderhoud: 9000,
+            servicekostenGWL: 9000,
+            belastingen: 4000,
+            verzekeringen: 3000,
+            service: 450, // Legacy compatibility
+            // Unit details
+            unitsDetails: [],
+            sharedSpaces: []
         };
         
         this.listeners = [];
@@ -68,7 +71,8 @@ class CoopState {
         const { price, reno, units, bankPercentage, bankInterest, bankYears, 
                 woonleerPercentage, woonleerInterest, woonleerYears,
                 obligatiesInterest, obligatiesYears, subsidies, eigenInlegPerPerson,
-                coopFund, reserveringOnderhoud, servicekostenGWL, belastingen, verzekeringen } = this.data;
+                coopFund, reserveringOnderhoud, servicekostenGWL, belastingen, verzekeringen,
+                unitsDetails, sharedSpaces } = this.data;
         
         // Basic calculations
         const tax = price * this.TAX_RATE;
@@ -101,13 +105,27 @@ class CoopState {
         const obligatiesPrincipal = obligatiesMonthly - obligatiesInterestMonthly;
         
         const totalMonthlyFinancing = bankMonthly + woonleerMonthly + obligatiesMonthly;
+        const totalYearlyFinancing = totalMonthlyFinancing * 12;
         
-        // Service costs breakdown
-        const totalServiceCosts = reserveringOnderhoud + servicekostenGWL + belastingen + verzekeringen;
+        // Service costs breakdown (convert yearly to monthly)
+        const coopFundMonthly = coopFund / 12;
+        const reserveringOnderhoudMonthly = reserveringOnderhoud / 12;
+        const servicekostenGWLMonthly = servicekostenGWL / 12;
+        const belastingenMonthly = belastingen / 12;
+        const verzekeringenMonthly = verzekeringen / 12;
+        
+        const totalServiceCosts = reserveringOnderhoudMonthly + servicekostenGWLMonthly + belastingenMonthly + verzekeringenMonthly;
+        const totalServiceCostsYearly = reserveringOnderhoud + servicekostenGWL + belastingen + verzekeringen;
         const service = totalServiceCosts; // Legacy compatibility
         
-        const totalMonthly = totalMonthlyFinancing + coopFund + totalServiceCosts;
+        const totalMonthly = totalMonthlyFinancing + coopFundMonthly + totalServiceCosts;
+        const totalYearly = totalYearlyFinancing + coopFund + totalServiceCostsYearly;
         const rentPerUnit = units > 0 ? totalMonthly / units : 0;
+        
+        // Unit and shared space calculations
+        const totalRentUnits = (unitsDetails || []).reduce((sum, unit) => sum + (unit.rentPerMonth || 0), 0);
+        const totalSquareMeters = (unitsDetails || []).reduce((sum, unit) => sum + (unit.squareMeters || 0), 0);
+        const sharedSquareMeters = (sharedSpaces || []).reduce((sum, space) => sum + (space.squareMeters || 0), 0);
 
         return {
             price, tax, reno, totalCost, units, service,
@@ -118,10 +136,17 @@ class CoopState {
             bankMonthly, bankPrincipal, bankInterestMonthly,
             woonleerMonthly, woonleerPrincipal, woonleerInterestMonthly,
             obligatiesMonthly, obligatiesPrincipal, obligatiesInterestMonthly,
-            totalMonthlyFinancing,
-            // Cost categories
-            coopFund, reserveringOnderhoud, servicekostenGWL, belastingen, verzekeringen,
-            totalServiceCosts, totalMonthly, rentPerUnit,
+            totalMonthlyFinancing, totalYearlyFinancing,
+            // Cost categories (yearly inputs, monthly calculations)
+            coopFund: coopFundMonthly, coopFundYearly: coopFund,
+            reserveringOnderhoud: reserveringOnderhoudMonthly, 
+            servicekostenGWL: servicekostenGWLMonthly, 
+            belastingen: belastingenMonthly, 
+            verzekeringen: verzekeringenMonthly,
+            totalServiceCosts, totalServiceCostsYearly, 
+            totalMonthly, totalYearly, rentPerUnit,
+            // Unit details
+            totalRentUnits, totalSquareMeters, sharedSquareMeters,
             // Legacy compatibility
             equity: totalEigenInleg,
             loanAmount: bankAmount + woonleerAmount + obligatiesAmount,

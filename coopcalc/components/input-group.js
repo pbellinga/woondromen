@@ -99,11 +99,8 @@ class CoopInputGroup {
 
         // Subscribe to state changes to update input value
         window.coopState.subscribe((data, calculations) => {
-            // Update input from calculated values if available
-            let updateValue = data[this.config.stateKey];
-            if (calculations[this.config.stateKey] !== undefined) {
-                updateValue = calculations[this.config.stateKey];
-            }
+            // Always use the actual state data for input values, not calculated values
+            const updateValue = data[this.config.stateKey];
             
             if (updateValue !== undefined) {
                 if (this.config.inputmode === 'numeric') {
@@ -113,7 +110,7 @@ class CoopInputGroup {
                 }
             }
             
-            // Update result display if applicable
+            // Update result display if applicable (use calculated values for results)
             if (this.config.showResult && this.config.resultKey && calculations[this.config.resultKey] !== undefined) {
                 const resultElement = this.element.querySelector(`#result-${this.config.resultKey}`);
                 if (resultElement) {

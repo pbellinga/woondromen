@@ -23,11 +23,11 @@ const Step3Config = {
         },
         {
             type: 'input-group',
-            label: 'Wooncoöperatie Fonds Bijdrage (€ per maand)',
+            label: 'Wooncoöperatie Fonds Bijdrage (€ per jaar)',
             id: 'coopFund',
             inputmode: 'numeric',
             stateKey: 'coopFund',
-            value: '50'
+            value: '5.000'
         },
         {
             type: 'summary-box',
@@ -36,43 +36,45 @@ const Step3Config = {
         },
         {
             type: 'input-group',
-            label: 'Reserveringen Onderhoud (€ per maand)',
+            label: 'Reserveringen Onderhoud (€ per jaar)',
             id: 'reserveringOnderhoud',
             inputmode: 'numeric',
             stateKey: 'reserveringOnderhoud',
-            value: '90'
+            value: '9.000'
         },
         {
             type: 'input-group',
-            label: 'Servicekosten GWL (€ per maand)',
+            label: 'Servicekosten GWL (€ per jaar)',
             id: 'servicekostenGWL',
             inputmode: 'numeric',
             stateKey: 'servicekostenGWL',
-            value: '90'
+            value: '9.000'
         },
         {
             type: 'input-group',
-            label: 'Belastingen (€ per maand)',
+            label: 'Belastingen (€ per jaar)',
             id: 'belastingen',
             inputmode: 'numeric',
             stateKey: 'belastingen',
-            value: '40'
+            value: '4.000'
         },
         {
             type: 'input-group',
-            label: 'Verzekeringen (€ per maand)',
+            label: 'Verzekeringen (€ per jaar)',
             id: 'verzekeringen',
             inputmode: 'numeric',
             stateKey: 'verzekeringen',
-            value: '30'
+            value: '3.000'
         },
         {
             type: 'summary-box',
             rows: [
-                { label: 'Totale Maandlasten Financiering', id: 'total-financing', valueKey: 'totalMonthlyFinancing', format: 'currency' },
-                { label: 'Wooncoöperatie Fonds', id: 'total-coop-fund', valueKey: 'coopFund', format: 'currency' },
-                { label: 'Service & Onderhoud Totaal', id: 'total-service', valueKey: 'totalServiceCosts', format: 'currency' },
-                { label: 'Totale Maandlasten', id: 'grand-total', valueKey: 'totalMonthly', format: 'currency', isTotal: true }
+                { label: 'Totale Jaarlasten Financiering', id: 'total-financing-yearly', valueKey: 'totalYearlyFinancing', format: 'currency' },
+                { label: 'Wooncoöperatie Fonds', id: 'total-coop-fund-yearly', valueKey: 'coopFundYearly', format: 'currency' },
+                { label: 'Service & Onderhoud Totaal', id: 'total-service-yearly', valueKey: 'totalServiceCostsYearly', format: 'currency' },
+                { label: 'Totale Jaarlasten', id: 'grand-total-yearly', valueKey: 'totalYearly', format: 'currency', isTotal: true },
+                { label: '', id: 'spacer-final', valueKey: '', format: 'spacer' },
+                { label: 'Totale Maandlasten (÷ 12)', id: 'grand-total-monthly', valueKey: 'totalMonthly', format: 'currency', isTotal: true }
             ]
         }
     ],

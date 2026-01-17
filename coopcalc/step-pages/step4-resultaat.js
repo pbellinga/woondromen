@@ -25,6 +25,11 @@ const Step4Config = {
             action: 'next',
             stepId: 3,
             secondary: true
+        },
+        {
+            label: 'Configureer Units',
+            action: 'next',
+            stepId: 5
         }
     ]
 };
